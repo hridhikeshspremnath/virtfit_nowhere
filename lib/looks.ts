@@ -1,4 +1,16 @@
+import { CATALOG } from './catalog'
+
 export type Role = 'top' | 'bottom' | 'shoes'
+export type Category = 'tops' | 'jackets' | 'dresses' | 'trousers' | 'skirts' | 'shorts' | 'shoes'
+export const CATEGORIES: { id: Category; label: string }[] = [
+  { id: 'tops', label: 'Tops' },
+  { id: 'jackets', label: 'Jackets' },
+  { id: 'dresses', label: 'Dresses' },
+  { id: 'trousers', label: 'Trousers' },
+  { id: 'skirts', label: 'Skirts' },
+  { id: 'shorts', label: 'Shorts' },
+  { id: 'shoes', label: 'Shoes' },
+]
 
 export type TopKind = 'tee' | 'crew' | 'shirt' | 'cardigan' | 'hoodie' | 'jacket' | 'coat'
 export type BottomKind = 'trousers' | 'wide' | 'cargo' | 'shorts' | 'skirt' | 'mini'
@@ -28,6 +40,9 @@ export type Item = {
   color: string
   /** position on the figure, in % of the figure box */
   hotspot: { x: number; y: number }
+  category: Category
+  /** product photo */
+  image?: string
 }
 
 export type Look = {
@@ -69,9 +84,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'cargo', color: '#727A5B' },
       shoes: { kind: 'sneaker', color: '#F3F1EA', sole: '#D9D5CA' },
     },
-    top: ['Boxy hoodie', 128],
-    bottom: ['Cargo pant', 112],
-    shoes: ['Court sneaker', 135],
+    top: ['Olive bomber jacket', 128],
+    bottom: ['Ripped boyfriend jeans', 112],
+    shoes: ['Strappy block heels', 135],
   },
   {
     id: 'old-money',
@@ -86,9 +101,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'trousers', color: '#27324A' },
       shoes: { kind: 'loafer', color: '#6B4226' },
     },
-    top: ['Cable knit polo', 164],
-    bottom: ['Pleated trouser', 148],
-    shoes: ['Penny loafer', 210],
+    top: ['Double-breasted blazer', 164],
+    bottom: ['Pale straight jeans', 148],
+    shoes: ['Nude pointed pumps', 210],
   },
   {
     id: 'goth',
@@ -103,9 +118,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'wide', color: '#2A2A2F' },
       shoes: { kind: 'platform', color: '#101012', sole: '#2E2E33' },
     },
-    top: ['Longline coat', 248],
-    bottom: ['Wide pleat trouser', 118],
-    shoes: ['Platform boot', 196],
+    top: ['Leather biker jacket', 248],
+    bottom: ['Black ripped jeans', 118],
+    shoes: ['Suede ankle boots', 196],
   },
   {
     id: 'y2k',
@@ -120,9 +135,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'mini', color: '#6F8FBF' },
       shoes: { kind: 'sneaker', color: '#C9B8F0', sole: '#FFFFFF' },
     },
-    top: ['Baby tee', 48],
-    bottom: ['Denim mini', 72],
-    shoes: ['Chunky runner', 142],
+    top: ['Off-shoulder crop top', 48],
+    bottom: ['Denim cut-offs', 72],
+    shoes: ['White chelsea boots', 142],
   },
   {
     id: 'techwear',
@@ -137,9 +152,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'cargo', color: '#444A51' },
       shoes: { kind: 'sneaker', color: '#C6E04A', sole: '#1B1B1D' },
     },
-    top: ['Shell jacket', 226],
-    bottom: ['Articulated cargo', 168],
-    shoes: ['Trail runner', 158],
+    top: ['Utility parka', 226],
+    bottom: ['Black skinny jeans', 168],
+    shoes: ['White leather sneakers', 158],
   },
   {
     id: 'quiet-luxury',
@@ -154,9 +169,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'wide', color: '#EDE7DB' },
       shoes: { kind: 'loafer', color: '#8B7765' },
     },
-    top: ['Cashmere crew', 285],
-    bottom: ['Wide wool trouser', 230],
-    shoes: ['Suede loafer', 260],
+    top: ['Breton stripe top', 285],
+    bottom: ['White cropped jeans', 230],
+    shoes: ['Horsebit loafers', 260],
   },
   {
     id: 'coquette',
@@ -171,9 +186,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'skirt', color: '#FBF4E6' },
       shoes: { kind: 'loafer', color: '#6E1F2B' },
     },
-    top: ['Pointelle cardigan', 96],
-    bottom: ['Pleated midi skirt', 88],
-    shoes: ['Mary jane', 124],
+    top: ['Oxford shirt', 96],
+    bottom: ['Pleated yellow skirt', 88],
+    shoes: ['Gold slingback heels', 124],
   },
   {
     id: 'grunge',
@@ -188,9 +203,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'trousers', color: '#8FA3B8' },
       shoes: { kind: 'boot', color: '#17171A', sole: '#2C2C30' },
     },
-    top: ['Flannel overshirt', 92],
-    bottom: ['Washed straight jean', 104],
-    shoes: ['Lug boot', 176],
+    top: ['Plaid flannel shirt', 92],
+    bottom: ['Ripped skinny jeans', 104],
+    shoes: ['Ankle-strap sandals', 176],
   },
   {
     id: 'minimalist',
@@ -205,9 +220,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'trousers', color: '#1C1C1E' },
       shoes: { kind: 'sneaker', color: '#FAFAF7', sole: '#E4E4E1' },
     },
-    top: ['Heavy tee', 58],
-    bottom: ['Tapered trouser', 126],
-    shoes: ['Leather low-top', 148],
+    top: ['White henley blouse', 58],
+    bottom: ['Indigo skinny jeans', 126],
+    shoes: ['Block-heel sandals', 148],
   },
 ]
 
@@ -221,9 +236,9 @@ export const LOOKS: Look[] = seeds.map((s, i) => {
     blurb: s.blurb,
     outfit: s.outfit,
     items: [
-      { id: `${s.id}-top`, name: s.top[0], role: 'top', price: s.top[1], color: s.outfit.top.color, hotspot: { x: 58, y: 33 } },
-      { id: `${s.id}-bottom`, name: s.bottom[0], role: 'bottom', price: s.bottom[1], color: s.outfit.bottom.color, hotspot: { x: 40, y: short ? 54 : 62 } },
-      { id: `${s.id}-shoes`, name: s.shoes[0], role: 'shoes', price: s.shoes[1], color: s.outfit.shoes.color, hotspot: { x: 60, y: 90 } },
+      { id: `${s.id}-top`, name: s.top[0], role: 'top', price: s.top[1], color: s.outfit.top.color, hotspot: { x: 58, y: 33 }, category: 'tops', image: `/garments/${s.id}-top.png` },
+      { id: `${s.id}-bottom`, name: s.bottom[0], role: 'bottom', price: s.bottom[1], color: s.outfit.bottom.color, hotspot: { x: 40, y: short ? 54 : 62 }, category: 'trousers', image: `/garments/${s.id}-bottom.png` },
+      { id: `${s.id}-shoes`, name: s.shoes[0], role: 'shoes', price: s.shoes[1], color: s.outfit.shoes.color, hotspot: { x: 60, y: 90 }, category: 'shoes', image: `/garments/${s.id}-shoes.png` },
     ],
   }
 })
@@ -231,7 +246,15 @@ export const LOOKS: Look[] = seeds.map((s, i) => {
 const itemIndex = new Map<string, { item: Item; look: Look }>()
 for (const look of LOOKS) for (const item of look.items) itemIndex.set(item.id, { item, look })
 
-export const findItem = (id: string) => itemIndex.get(id)
+/** Everything outside the nine looks is sold on its own; this stands in for "its look" where one is expected. */
+const SHOP_LOOK: Look = { ...LOOKS[0], id: 'shop', index: -1, aesthetic: 'Shop', subtitle: 'Single pieces', blurb: '' }
+export const SHOP_ITEMS: Item[] = CATALOG.map((c) => ({ ...c, color: '#d8d8d4', hotspot: { x: 50, y: 50 } }))
+for (const item of SHOP_ITEMS) itemIndex.set(item.id, { item, look: SHOP_LOOK })
+
+/** Every product in the store: the looks' pieces first, then the single pieces. */
+export const PRODUCTS: Item[] = [...LOOKS.flatMap((l) => l.items), ...SHOP_ITEMS]
+
+export const findItem = (id: string | null | undefined) => (id ? itemIndex.get(id) : undefined)
 export const findLook = (id: string | null | undefined) => LOOKS.find((l) => l.id === id)
 
 export const pad2 = (n: number) => String(n).padStart(2, '0')

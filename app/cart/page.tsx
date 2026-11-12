@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import Barcode from '@/components/Barcode'
-import Figure, { ItemThumb } from '@/components/Figure'
+import Figure from '@/components/Figure'
+import { ProductImage } from '@/components/ProductCard'
 import TopBar, { ArrowLeft } from '@/components/TopBar'
 import { BRAND, TILL, money, sizeLabel } from '@/lib/looks'
 import { summarize, useBag } from '@/lib/store'
@@ -17,12 +18,12 @@ export default function CartPage() {
   const setQty = useBag((s) => s.setQty)
   const remove = useBag((s) => s.remove)
   const add = useBag((s) => s.add)
+  const clear = useBag((s) => s.clear)
 
   // wait for the saved bag before printing, so the paper is cut to the right length
   const [ready, setReady] = useState(false)
   const [printed, setPrinted] = useState(false)
   const [leaving, setLeaving] = useState<string[]>([])
-  const [notice, setNotice] = useState(false)
   const [stamp, setStamp] = useState('')
   const initial = useRef<Set<string> | null>(null)
 
@@ -101,7 +102,7 @@ export default function CartPage() {
                   {RULE}
                 </p>
                 <p className="empty-line">Nothing here yet.</p>
-                <Link href="/" className="bar-btn">
+                <Link href="/shop" className="bar-btn">
                   Start shopping <span aria-hidden="true">→</span>
                 </Link>
               </>
@@ -127,9 +128,9 @@ export default function CartPage() {
                     return (
                       <li key={k} className={`${leaving.includes(k) ? 'is-leaving' : ''}${isNew ? ' is-new' : ''}`}>
                         <div className="line">
-                          <span className="thumb">
-                            <ItemThumb role={item.role} color={item.color} />
-                          </span>
+                          <Link href={`/product/${item.id}`} className="thumb" aria-label={item.name}>
+                            <ProductImage item={item} />
+                          </Link>
                           <div className="what">
                             <span>
                               {String(i + 1).padStart(2, '0')} {item.name}
@@ -195,15 +196,13 @@ export default function CartPage() {
                   </div>
                 </dl>
 
-                <p className="hand">tear along the dotted line ↓</p>
-                <button type="button" className="bar-btn" onClick={() => setNotice(true)}>
-                  Checkout <span aria-hidden="true">→</span>
+                <button type="button" className="clear-bag" onClick={() => window.confirm('Remove everything from your bag?') && clear()}>
+                  Clear bag
                 </button>
-                {notice && (
-                  <p className="paper-note" role="status">
-                    Checkout isn’t built yet. This demo stops at the bag.
-                  </p>
-                )}
+                <p className="hand">tear along the dotted line ↓</p>
+                <Link href="/checkout" className="bar-btn">
+                  Checkout <span aria-hidden="true">→</span>
+                </Link>
 
                 <div className="paper-tags">
                   <p>
@@ -234,7 +233,7 @@ export default function CartPage() {
             {sum.missing.slice(0, 3).map(({ item, look }) => (
               <li key={item.id}>
                 <span className="thumb">
-                  <ItemThumb role={item.role} color={item.color} />
+                  <ProductImage item={item} />
                 </span>
                 <span className="what">
                   <strong>{item.name}</strong>

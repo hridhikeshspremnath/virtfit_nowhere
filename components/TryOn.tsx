@@ -172,7 +172,7 @@ export function ProfilePhoto({ open, onOpen }: { open: boolean; onOpen: (open: b
               </p>
             )}
             <p className="profile-note">
-              Kept in this browser only. It is sent to the try-on service when you tap “Try on”, and nowhere else.
+              Kept in this browser only. It is sent to the try-on service only when you tap “Make it real”.
             </p>
           </div>
         </>
@@ -190,26 +190,57 @@ type Placement = { left: number; top: number; width: number; clip: number }
  * If the product shot is worn by a model, that model's shoulders are used and the head is clipped off;
  * a flat shot falls back to typical proportions. A 2D overlay: it does not wrap or drape.
  */
-function place(user: Landmark[], g: { aspect: number; pose: Landmark[] | null }): Placement | null {
+export function place(user: Landmark[], g: { aspect: number; pose: Landmark[] | null }, hips = false): Placement | null {
   const ok = (p?: Landmark) => !!p && (p.visibility ?? 1) > 0.5
-  if (!ok(user[11]) || !ok(user[12])) return null
+  // tops hang from the shoulders, bottoms from the hips
+  const [i, j] = hips ? [23, 24] : [11, 12]
+  if (!ok(user[i]) || !ok(user[j])) return null
   const A = W / H
-  const du = Math.hypot((user[11].x - user[12].x) * A, user[11].y - user[12].y)
-  // trust the product shot's own pose only if its shoulders span a believable share of the picture
-  const span = g.pose && ok(g.pose[11]) && ok(g.pose[12]) ? Math.abs(g.pose[11].x - g.pose[12].x) : 0
-  const worn = g.pose && span > 0.25 && span < 0.8 ? g.pose : null
-  const gm = worn ? { x: (worn[11].x + worn[12].x) / 2, y: (worn[11].y + worn[12].y) / 2 } : { x: 0.5, y: 0.15 }
-  const dg = worn ? Math.hypot((worn[11].x - worn[12].x) * g.aspect, worn[11].y - worn[12].y) : 0.68 * g.aspect
+  const du = Math.hypot((user[i].x - user[j].x) * A, user[i].y - user[j].y)
+  // trust the product shot's own pose only if its joints span a believable share of the picture
+  const span = g.pose && ok(g.pose[i]) && ok(g.pose[j]) ? Math.abs(g.pose[i].x - g.pose[j].x) : 0
+  const worn = g.pose && span > (hips ? 0.12 : 0.25) && span < (hips ? 0.6 : 0.8) ? g.pose : null
+  const gm = worn ? { x: (worn[i].x + worn[j].x) / 2, y: (worn[i].y + worn[j].y) / 2 } : { x: 0.5, y: hips ? 0.07 : 0.15 }
+  const dg = worn ? Math.hypot((worn[i].x - worn[j].x) * g.aspect, worn[i].y - worn[j].y) : (hips ? 0.42 : 0.68) * g.aspect
   if (dg < 0.02) return null
   const height = du / dg // in card heights
   const width = (height * g.aspect) / A // in card widths
   if (width > 1.1 || width < 0.12) return null
   return {
-    left: ((user[11].x + user[12].x) / 2 - gm.x * width) * 100,
-    top: ((user[11].y + user[12].y) / 2 - gm.y * height) * 100,
+    left: ((user[i].x + user[j].x) / 2 - gm.x * width) * 100,
+    top: ((user[i].y + user[j].y) / 2 - gm.y * height) * 100,
     width: width * 100,
-    clip: worn ? Math.max(0, gm.y - 0.05) * 100 : 0,
+    clip: worn && !hips ? Math.max(0, gm.y - 0.05) * 100 : 0,
   }
+}
+
+/** One garment cut-out laid over the shopper's photo. Renders nothing until it can be placed. */
+export function GarmentOverlay({ src, pose, hips }: { src: string; pose: Landmark[]; hips?: boolean }) {
+  const [shape, setShape] = useState<{ src: string; aspect: number; pose: Landmark[] | null } | null>(null)
+  useEffect(() => {
+    let on = true
+    const img = new Image()
+    img.onload = async () => {
+      const worn = await detectPose(src).catch(() => null)
+      if (on) setShape({ src, aspect: img.naturalWidth / img.naturalHeight, pose: worn })
+    }
+    img.src = src
+    return () => {
+      on = false
+    }
+  }, [src])
+  const at = shape && shape.src === src ? place(pose, shape, hips) : null
+  if (!at) return null
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      key={src}
+      src={src}
+      alt=""
+      draggable={false}
+      style={{ left: `${at.left}%`, top: `${at.top}%`, width: `${at.width}%`, clipPath: `inset(${at.clip}% 0 0 0)` }}
+    />
+  )
 }
 
 export function TryOnStage({

@@ -26,6 +26,9 @@ export const JOINTS = [0, 11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28]
 let landmarker: Promise<any> | null = null
 function load() {
   landmarker ??= (async () => {
+    // the library reports its start-up as console.error("INFO: ..."), which trips the dev error badge
+    const raw = console.error
+    console.error = (...a: unknown[]) => (typeof a[0] === 'string' && a[0].startsWith('INFO:') ? undefined : raw(...a))
     const vision = await import(/* webpackIgnore: true */ `${LIB}/vision_bundle.mjs`)
     const files = await vision.FilesetResolver.forVisionTasks(`${LIB}/wasm`)
     return vision.PoseLandmarker.createFromOptions(files, {

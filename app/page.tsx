@@ -104,7 +104,11 @@ export default function Home() {
         onToggleAutoplay={() => setAutoplay((a) => !a)}
         results={results}
         photos={assets.looks}
-      />
+      >
+        <div className="prism" aria-hidden="true">
+          <span>Today&apos;s top picks</span>
+        </div>
+      </Ring>
 
       {/* bottom dock */}
       <div className="dock glass">
@@ -203,6 +207,7 @@ export default function Home() {
           ))}
         </ul>
         <footer className="micro">
+          <Link href="/shop">Shop all</Link>
           <Link href="/fit-check">Virtual try-on</Link>
           <Link href="/cart">Bag</Link>
           <span>Free returns · 30 days</span>
@@ -221,9 +226,8 @@ export default function Home() {
           focusItem={sel.item}
           closeSignal={closeSignal}
           returnRect={() => ring.current?.rectOf(sel.index) ?? null}
-          photo={assets.looks[`${LOOKS[sel.index].id}-shop`] ?? assets.looks[LOOKS[sel.index].id]}
+          photo={assets.looks[LOOKS[sel.index].id]}
           garments={assets.garments}
-          spots={assets.hotspots[LOOKS[sel.index].id]}
           onClosed={() => setSel(null)}
         />
       )}

@@ -1,92 +1,116 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useMemo, useState } from 'react'
-import type { Clip, View } from '@/components/FitStage'
+import { ProductImage } from '@/components/ProductCard'
 import TopBar, { ArrowLeft } from '@/components/TopBar'
-import { ProfilePhoto, TryOnStage } from '@/components/TryOn'
-import { DEFAULT_BODY, SIZES, fitFor, type Size } from '@/lib/fit'
-import { LOOKS, findLook, money, pad2 } from '@/lib/looks'
-import { bodyFromPose, detectPose, type Landmark } from '@/lib/pose'
-import { useAssets, useProfile, useProfileHydration } from '@/lib/profile'
+import { GarmentOverlay, ProfilePhoto } from '@/components/TryOn'
+import { PRODUCTS, SIZE_COUNT, findItem, findLook, money, sizeLabel, type Category, type Item, type Role } from '@/lib/looks'
+import { detectPose, type Landmark } from '@/lib/pose'
+import { useProfile, useProfileHydration } from '@/lib/profile'
 import { useBag } from '@/lib/store'
-import './fit.css'
+import './room.css'
 
-const FitStage = dynamic(() => import('@/components/FitStage'), { ssr: false })
-
-const CLIPS: { id: Clip; label: string }[] = [
-  { id: 'idle', label: 'Idle' },
-  { id: 'walk', label: 'Walk' },
-  { id: 'turn', label: '360' },
-  { id: 'arms', label: 'Arms up' },
+const TABS: { id: string; label: string; cats: Category[] }[] = [
+  { id: 'tops', label: 'Tops', cats: ['tops', 'dresses'] },
+  { id: 'bottoms', label: 'Bottoms', cats: ['trousers', 'skirts', 'shorts'] },
+  { id: 'outerwear', label: 'Outerwear', cats: ['jackets'] },
+  { id: 'shoes', label: 'Shoes', cats: ['shoes'] },
 ]
-const VIEWS: View[] = ['front', 'side', 'back']
-
-type PoseState = { status: 'none' | 'reading' | 'found' | 'missing' | 'failed'; landmarks: Landmark[] | null }
+const SIDE = 3 // cards on each side of the person
 
 /**
- * Fit Check (design.md Part B, trimmed to its core): the shopper's photo with the detected pose
- * drawn over it, and a 3D avatar built from that pose which can be turned and posed.
+ * The fitting room: the shopper's photo in the middle, garments on glass cards either side.
+ * Picking a top or jacket lays it over the photo at the shoulders; bottoms and shoes can be picked and bought but are not drawn on.
  */
-function FitCheck() {
+function FittingRoom() {
   useProfileHydration()
-  const router = useRouter()
   const params = useSearchParams()
-  const look = findLook(params.get('look')) ?? LOOKS[0]
-  const item = look.items[0]
-  const kind = look.outfit.top.kind
-
   const photo = useProfile((s) => s.photo)
-  const { garments } = useAssets()
-  const height = useProfile((s) => s.height)
-  const [profile, setProfile] = useState(false)
-  const [pose, setPose] = useState<PoseState>({ status: 'none', landmarks: null })
-  const [size, setSize] = useState<Size>('M')
-  const [clip, setClip] = useState<Clip>('idle')
-  const [view, setView] = useState<{ name: View; n: number }>({ name: 'front', n: 0 })
-  const [reset, setReset] = useState(0)
-  const [unsupported, setUnsupported] = useState(false)
-  const [added, setAdded] = useState(false)
   const add = useBag((s) => s.add)
+
+  const [profile, setProfile] = useState(false)
+  const [tab, setTab] = useState('tops')
+  const [offset, setOffset] = useState(0)
+  const [worn, setWorn] = useState<Partial<Record<Role, Item>>>(() => {
+    const single = findItem(params.get('item'))?.item
+    if (single) return { [single.role]: single }
+    const look = findLook(params.get('look'))
+    return look ? { top: look.items[0] } : {}
+  })
+  const [focus, setFocus] = useState<Role>(() => findItem(params.get('item'))?.item.role ?? 'top')
+  const [sizeIdx, setSizeIdx] = useState(1)
+  const [added, setAdded] = useState(false)
+  // photo-real results by garment id, for the current photo only
+  const [real, setReal] = useState<Record<string, string>>({})
+  const [busy, setBusy] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [pose, setPose] = useState<{ status: 'none' | 'reading' | 'found' | 'missing'; landmarks: Landmark[] | null }>({ status: 'none', landmarks: null })
 
   // read the pose from the photo, on this device
   useEffect(() => {
+    setReal({})
+    setError(null)
     if (!photo) return setPose({ status: 'none', landmarks: null })
     let on = true
     setPose({ status: 'reading', landmarks: null })
     detectPose(photo)
       .then((lm) => on && setPose(lm ? { status: 'found', landmarks: lm } : { status: 'missing', landmarks: null }))
-      .catch(() => on && setPose({ status: 'failed', landmarks: null }))
+      .catch(() => on && setPose({ status: 'missing', landmarks: null }))
     return () => {
       on = false
     }
   }, [photo])
 
-  const measured = useMemo(() => (pose.landmarks ? bodyFromPose(pose.landmarks, height || 175) : null), [pose.landmarks, height])
-  const body = measured ?? DEFAULT_BODY
-  const fit = useMemo(() => fitFor(kind, size, body), [kind, size, body])
+  const items = useMemo(() => {
+    const cats = TABS.find((t) => t.id === tab)!.cats
+    return PRODUCTS.filter((p) => cats.includes(p.category) && p.image)
+  }, [tab])
+  const at = (k: number) => items[(((offset + k) % items.length) + items.length) % items.length]
+  const left = Array.from({ length: Math.min(SIDE, items.length) }, (_, k) => at(k))
+  const right = Array.from({ length: Math.min(SIDE, Math.max(0, items.length - SIDE)) }, (_, k) => at(SIDE + k))
 
-  const go = (dir: number) => {
-    const next = LOOKS[(look.index + dir + LOOKS.length) % LOOKS.length]
-    router.replace(`/fit-check?look=${next.id}`, { scroll: false })
+  const wear = (item: Item) => {
+    setWorn((w) => ({ ...w, [item.role]: item }))
+    setFocus(item.role)
+  }
+  const current = worn[focus] ?? worn.top ?? worn.bottom ?? worn.shoes
+  const top = worn.top
+  const dressed = top ? real[top.id] : undefined
+
+  const makeReal = async () => {
+    if (!top?.image || !photo || busy) return
+    setBusy(top.id)
+    setError(null)
+    try {
+      const ask = () => fetch('/api/vton', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ person: photo, garment: top.image, name: top.name }) })
+      let res = await ask()
+      if (res.status === 502) res = await ask() // the free service drops the odd request; one retry usually lands
+      const j = await res.json().catch(() => null)
+      if (!res.ok || !j?.url) throw new Error(j?.message || 'Could not make the picture. Try again.')
+      setReal((r) => ({ ...r, [top.id]: j.url }))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not make the picture. Try again.')
+    } finally {
+      setBusy(null)
+    }
   }
 
-  const note = !photo
-    ? 'Standard avatar. Add your photo in Profile to shape it like you.'
-    : pose.status === 'reading'
-      ? 'Reading your pose on this device…'
-      : pose.status === 'failed'
-        ? 'Pose detection could not load. Showing a standard avatar.'
-        : !measured
-          ? 'Could not see your whole body, head to ankles. Showing a standard avatar.'
-          : `Shaped from your photo and ${body.height} cm height · estimate`
+  const card = (item: Item, i: number) => (
+    <button key={item.id} type="button" className={`g-card d${i}${worn[item.role]?.id === item.id ? ' is-on' : ''}`} onClick={() => wear(item)}>
+      <span className="g-img">
+        <ProductImage item={item} />
+      </span>
+      <strong>{item.name}</strong>
+      <em>{money(item.price)}</em>
+      <i aria-hidden="true">Try on</i>
+    </button>
+  )
 
   return (
-    <main className="fit fit-duo theme-dark">
+    <main className="room">
       <TopBar
-        dark
         left={
           <>
             <Link href="/" className="circle-btn solid" aria-label="Return to styles">
@@ -96,108 +120,116 @@ function FitCheck() {
           </>
         }
       />
+      <p className="room-word" aria-hidden="true">
+        FIT
+      </p>
 
-      <div className="fit-look">
-        <button type="button" className="circle-btn glass" onClick={() => go(-1)} aria-label="Previous style">
+      <nav className="room-tabs seg glass" aria-label="Category">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            aria-pressed={tab === t.id}
+            onClick={() => {
+              setTab(t.id)
+              setOffset(0)
+            }}
+          >
+            {t.label}
+          </button>
+        ))}
+      </nav>
+
+      <div className="room-row">
+        <button type="button" className="circle-btn glass" onClick={() => setOffset((o) => o - 1)} aria-label="Previous garments">
           <ArrowLeft />
         </button>
-        <div>
-          <span className="micro">
-            {pad2(look.index + 1)} / {pad2(LOOKS.length)} · {look.aesthetic}
-          </span>
-          <strong>{item.name}</strong>
-        </div>
-        <button type="button" className="circle-btn glass flip" onClick={() => go(1)} aria-label="Next style">
-          <ArrowLeft />
-        </button>
-      </div>
+        <div className="rail left">{left.map((it, i) => card(it, left.length - 1 - i))}</div>
 
-      <section className="fit-pair">
-        <figure className="fit-card">
-          <TryOnStage look={look} onNeedPhoto={() => setProfile(true)} pose={pose.landmarks} garment={garments[item.id]} />
-          <figcaption className="micro">Your photo</figcaption>
-        </figure>
-
-        <figure className="fit-card">
-          <div className="fit-3d">
-            {unsupported ? (
-              <div className="fit-fallback">
-                <h2>3D isn’t available on this device.</h2>
-                <p>The fitting room needs WebGL.</p>
-              </div>
-            ) : (
-              <FitStage
-                body={body}
-                outfit={look.outfit}
-                fit={fit}
-                heatmap={false}
-                clip={clip}
-                view={view}
-                resetSignal={reset}
-                onUnsupported={() => setUnsupported(true)}
-              />
-            )}
-          </div>
-          <figcaption className="micro">{note}</figcaption>
-        </figure>
-      </section>
-
-      <div className="fit-bar glass">
-        {!unsupported && (
-          <>
-            <div className="seg small" role="group" aria-label="Pose">
-              {CLIPS.map((c) => (
-                <button key={c.id} type="button" aria-pressed={clip === c.id} onClick={() => setClip(c.id)}>
-                  {c.label}
+        <div className="person">
+          {photo ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="person-photo" src={dressed ?? photo} alt={dressed ? `You wearing the ${top?.name}` : 'Your photo'} draggable={false} />
+              {pose.landmarks && !dressed && (
+                <span className="you-garment">
+                  {worn.top?.image && <GarmentOverlay src={worn.top.image} pose={pose.landmarks} />}
+                </span>
+              )}
+              {busy && (
+                <span className="you-busy" role="status">
+                  <i aria-hidden="true" />
+                  <span>Dressing you in the {top?.name}… about half a minute</span>
+                </span>
+              )}
+              {top?.image && !dressed && !busy && (
+                <button type="button" className="pill solid person-real" onClick={makeReal}>
+                  Make it real ✦
                 </button>
-              ))}
-            </div>
-            <div className="seg small" role="group" aria-label="Camera view">
-              {VIEWS.map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => {
-                    if (clip === 'turn') setClip('idle')
-                    setView((s) => ({ name: v, n: s.n + 1 }))
-                  }}
-                >
-                  {v}
-                </button>
-              ))}
-              <button type="button" onClick={() => setReset((n) => n + 1)} aria-label="Reset camera">
-                ⟲
-              </button>
-            </div>
-          </>
-        )}
-        <div className="seg small" role="group" aria-label="Size">
-          {SIZES.map((s) => (
-            <button key={s} type="button" aria-pressed={size === s} onClick={() => setSize(s)}>
-              {s}
+              )}
+              {error && !busy && (
+                <span className="person-note glass" role="alert">
+                  {error}
+                </span>
+              )}
+              {pose.status !== 'found' && !error && (
+                <span className="person-note glass" role="status">
+                  {pose.status === 'reading' ? 'Finding your pose…' : 'Could not find your shoulders. Try a photo facing the camera.'}
+                </span>
+              )}
+            </>
+          ) : (
+            <button type="button" className="you-drop" onClick={() => setProfile(true)}>
+              <strong>Your photo goes here</strong>
+              <span className="hint">Add it from Profile, then tap any garment to try it on.</span>
+              <span className="pill solid">Open profile</span>
             </button>
-          ))}
+          )}
         </div>
-        <button
-          type="button"
-          className="pill solid"
-          onClick={() => {
-            add(item.id, size)
-            setAdded(true)
-            setTimeout(() => setAdded(false), 1600)
-          }}
-        >
-          {added ? 'Added' : `Add ${size} · ${money(item.price)}`}
+
+        <div className="rail right">{right.map((it, i) => card(it, i))}</div>
+        <button type="button" className="circle-btn glass flip" onClick={() => setOffset((o) => o + 1)} aria-label="More garments">
+          <ArrowLeft />
         </button>
       </div>
+
+      {current && (
+        <div className="room-bar glass">
+          <span className="thumb">
+            <ProductImage item={current} />
+          </span>
+          <span className="what">
+            <strong>{current.name}</strong>
+            <em>{money(current.price)}</em>
+          </span>
+          <div className="seg small" role="group" aria-label="Size">
+            {Array.from({ length: SIZE_COUNT }, (_, i) => (
+              <button key={i} type="button" aria-pressed={sizeIdx === i} onClick={() => setSizeIdx(i)}>
+                {sizeLabel(current.role, i)}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="pill solid"
+            onClick={() => {
+              add(current.id, sizeLabel(current.role, sizeIdx))
+              setAdded(true)
+              setTimeout(() => setAdded(false), 1500)
+            }}
+          >
+            {added ? 'Added ✓' : 'Add to bag'}
+          </button>
+        </div>
+      )}
     </main>
   )
 }
 
 export default function FitCheckPage() {
   return (
-    <Suspense fallback={<main className="fit theme-dark" />}>
-      <FitCheck />
+    <Suspense fallback={<main className="room" />}>
+      <FittingRoom />
     </Suspense>
   )
 }

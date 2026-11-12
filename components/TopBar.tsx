@@ -22,7 +22,9 @@ export default function TopBar({ left, dark }: { left?: ReactNode; dark?: boolea
         <sup>©</sup>
       </Link>
       <div className="topbar-right">
-        <span className="micro hide-md">Vol. 01 · Lisbon</span>
+        <Link href="/shop" className="pill glass hide-sm">
+          Shop
+        </Link>
         <Link href="/cart" className="pill glass" aria-label={`Bag, ${count} ${count === 1 ? 'item' : 'items'}`}>
           Bag
           <span className="bag-count" key={count}>

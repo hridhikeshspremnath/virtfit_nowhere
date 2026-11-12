@@ -99,6 +99,7 @@ const Ring = forwardRef<RingHandle, Props>(function Ring(props, ref) {
       const g = geometry(st.w, st.h)
       el.style.setProperty('--fh', `${g.fh}px`)
       el.style.setProperty('--cx', `${g.cx}px`)
+      el.style.setProperty('--cy', `${g.cy}px`)
       el.style.setProperty('--ch', `${g.ch}px`)
       // the card ends just above the head of the front figure, so its buttons stay clear
       el.style.setProperty('--cb', `${g.cy + g.ry - g.fh - 10}px`)

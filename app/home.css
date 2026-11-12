@@ -475,3 +475,39 @@
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
   animation: fade 400ms ease backwards;
 }
+
+/* "today's top picks": a clear glass prism standing on the ring's floor, at its centre */
+.prism {
+  position: absolute;
+  left: var(--cx, 50%);
+  top: var(--cy, 50%);
+  z-index: 50; /* behind the front figures, in front of the back ones */
+  width: 76px;
+  height: calc(var(--fh, 240px) * 1.15);
+  transform: translate(-50%, -100%);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  /* three facets: lit left face, clear middle, shaded right face */
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0 24%, rgba(255, 255, 255, 0.12) 24% 76%, rgba(214, 220, 238, 0.32) 76% 100%);
+  -webkit-backdrop-filter: blur(5px) saturate(1.3);
+  backdrop-filter: blur(5px) saturate(1.3);
+  /* pointed top, and a base curved like the ring it stands in */
+  clip-path: polygon(50% 0, 100% 14px, 100% calc(100% - 9px), 50% 100%, 0 calc(100% - 9px), 0 14px);
+  animation: fade 600ms ease 300ms backwards;
+}
+.prism span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink);
+}
+@media (max-width: 767px) {
+  .prism {
+    display: none;
+  }
+}
