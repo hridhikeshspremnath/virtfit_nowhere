@@ -1,0 +1,9 @@
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+.env*.local
+
+# cloned dataset (its own git repo)
+STL-Dataset/

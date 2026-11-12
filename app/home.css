@@ -1,0 +1,477 @@
+/* Home: the ring is the page. Small cursive line top-left, the shopper's photo in the middle. */
+.home.has-detail .tagline {
+  opacity: 0;
+}
+.tagline {
+  position: absolute;
+  z-index: 3;
+  left: 3.2vw;
+  top: 92px;
+
+  max-width: 17rem;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+  animation: fade 700ms ease 200ms backwards;
+}
+.tagline h1 {
+  font-family: var(--font-script), 'Snell Roundhand', cursive;
+  font-weight: 400;
+  font-size: clamp(1.9rem, 2.7vw, 2.9rem);
+  line-height: 1.08;
+  letter-spacing: 0;
+  color: var(--pink);
+}
+.tagline h1 s {
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(10, 10, 10, 0.5);
+}
+.tagline p {
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--smoke);
+}
+
+/* style name under each figure on the ring */
+.fig-label {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  margin-top: 12px;
+  transform: translateX(-50%);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--smoke);
+}
+/* a style the shopper has tried on shows their photo in it */
+.fig-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(10, 10, 10, 0.18);
+}
+
+/* the shopper, standing in the middle of the ring */
+.you {
+  position: absolute;
+  left: var(--cx, 50%);
+  top: var(--cb, 55%);
+  height: var(--ch, 300px);
+  aspect-ratio: 3 / 4;
+  transform: translate(-50%, -100%);
+  z-index: 40;
+  border-radius: 28px;
+  cursor: default;
+  animation: fade 600ms ease 250ms backwards;
+}
+.you-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  border-radius: inherit;
+  border: 1.5px dashed rgba(10, 10, 10, 0.24);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  backdrop-filter: blur(22px) saturate(1.4);
+  box-shadow: var(--glass-shadow);
+  text-align: center;
+  transition: border-color var(--d-fast), background var(--d-fast), transform var(--d-base) var(--ease-out);
+}
+.you-drop:hover,
+.you.is-over .you-drop {
+  border-color: var(--ink);
+  background: var(--white);
+}
+.you.is-over .you-drop {
+  transform: scale(1.02);
+}
+.you-drop strong {
+  margin-top: 4px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.you-drop .hint {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--smoke);
+}
+.you-drop .pill {
+  margin-top: 6px;
+  height: 36px;
+  padding: 0 16px;
+}
+.you-drop small {
+  margin-top: 6px;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--ash);
+}
+.you-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  background: var(--mist);
+  box-shadow: 0 24px 60px rgba(10, 10, 10, 0.18), 0 0 0 1px var(--glass-line);
+}
+.you-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-family: var(--font-mono), monospace;
+  font-size: var(--t-micro);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.you-x {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+}
+.you-actions {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.you-actions .pill {
+  height: 38px;
+  padding: 0 18px;
+  box-shadow: 0 8px 24px rgba(10, 10, 10, 0.22);
+}
+.you-actions .seg button {
+  padding: 0 9px;
+}
+.you-busy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  text-align: center;
+}
+.you-busy i {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(10, 10, 10, 0.14);
+  border-top-color: var(--ink);
+  animation: you-spin 800ms linear infinite;
+}
+@keyframes you-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.you-error {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 60px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.you:not(:has(.you-media)) .you-error {
+  top: calc(100% + 10px);
+  bottom: auto;
+}
+
+@media (max-width: 767px) {
+  .tagline {
+    left: 0;
+    right: 0;
+    top: 68px;
+    max-width: none;
+    text-align: center;
+  }
+  .tagline h1 {
+    font-size: 1.75rem;
+  }
+  .tagline p {
+    display: none;
+  }
+  .fig-label {
+    display: none;
+  }
+}
+
+/* profile: where the shopper's photo is added (try-on page only) */
+.profile {
+  position: relative;
+}
+.profile-btn {
+  padding-left: 5px;
+  gap: 8px;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(128, 128, 128, 0.22);
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 18%;
+}
+.profile-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+.profile-panel {
+  position: absolute;
+  z-index: 41;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 264px;
+  padding: 16px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--fg);
+  animation: fade 200ms ease backwards;
+}
+.profile-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1.5px dashed var(--line);
+  overflow: hidden;
+  text-align: center;
+  transition: border-color var(--d-fast);
+}
+.profile-photo:hover,
+.profile-panel.is-over .profile-photo {
+  border-color: var(--fg);
+}
+.profile-photo:has(img) {
+  padding: 0;
+  border-style: solid;
+}
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.profile-photo strong {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.profile-photo span {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--fg2);
+}
+.profile-row {
+  display: flex;
+  gap: 8px;
+}
+.profile-row .pill {
+  height: 36px;
+  padding: 0 14px;
+}
+.profile-row .pill:not(.solid) {
+  border: 1px solid var(--line);
+}
+.profile-note,
+.profile-error {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--fg2);
+}
+.profile-error {
+  color: var(--pink);
+}
+
+/* real photography on the ring, when it exists */
+.fig-photo.cutout {
+  object-fit: contain;
+  object-position: 50% 100%;
+  border-radius: 0;
+  box-shadow: none;
+}
+.tagline .pill {
+  pointer-events: auto;
+  margin-top: 14px;
+  height: 38px;
+  padding: 0 16px;
+}
+.item-pill .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* a real (non cut-out) photo on the ring gets a wider, card-shaped slot */
+.fig:has(.fig-photo:not(.cutout)) {
+  width: calc(var(--fh, 240px) * 0.6);
+}
+.fig-photo:not(.cutout) {
+  object-position: 50% 30%;
+}
+
+/* look view with real photography: a normal product page */
+.hero.has-photo {
+  aspect-ratio: auto;
+  height: min(72vh, 660px);
+}
+.hero-photo {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: min(46vw, 520px);
+  object-fit: cover;
+  border-radius: 22px;
+  box-shadow: 0 30px 70px rgba(10, 10, 10, 0.16);
+}
+.receipt li.has-shot {
+  grid-template-columns: 64px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.product-shot {
+  width: 64px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: var(--white);
+  border: 1px solid var(--hair);
+}
+@media (max-width: 1023px) {
+  .hero-photo {
+    max-width: 86vw;
+  }
+}
+
+/* pose found in the photo, drawn over it */
+.you-pose {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  animation: fade 500ms ease backwards;
+}
+.you-pose line {
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+}
+.you-pose .joint {
+  stroke: var(--pink);
+  stroke-width: 9;
+}
+.profile-height {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+.profile-height span:first-child {
+  flex: 1;
+}
+.profile-height span:last-child {
+  color: var(--fg2);
+}
+.profile-height input {
+  width: 72px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: right;
+}
+
+/* cut-out people: wider slot on the ring, no card in the shop view */
+.fig:has(.fig-photo.cutout) {
+  width: calc(var(--fh, 240px) * 0.56);
+}
+.fig-photo.cutout {
+  filter: drop-shadow(0 6px 10px rgba(10, 10, 10, 0.12));
+}
+.hero-photo.cutout {
+  object-fit: contain;
+  border-radius: 0;
+  box-shadow: none;
+  filter: drop-shadow(0 18px 24px rgba(10, 10, 10, 0.16));
+}
+.product-shot {
+  border: 0;
+  background: transparent;
+}
+.item-pill .thumb img {
+  object-fit: contain;
+  border-radius: 0;
+}
+
+/* the garment cut-out laid over the shopper's photo */
+.you-garment {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.you-garment img {
+  position: absolute;
+  height: auto;
+  max-width: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+  animation: fade 400ms ease backwards;
+}

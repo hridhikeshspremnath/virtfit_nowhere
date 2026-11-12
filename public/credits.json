@@ -1,0 +1,146 @@
+{
+  "looks/streetwear.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/08/52/8b/08528bb24f7b5ccaf30b0e5a6c5ec8c1.jpg"
+  },
+  "garments/streetwear-top.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/c3/53/35/c353353bd34830284ccd2940ce042451.jpg"
+  },
+  "garments/streetwear-bottom.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/f7/41/bc/f741bca43300e27ea03ee54461db440f.jpg"
+  },
+  "garments/streetwear-shoes.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/b3/86/15/b386153c33a6fd7aa110c11c102848aa.jpg"
+  },
+  "looks/old-money.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/10/c2/ce/10c2ce97eec6a0550e0f6b67073e6808.jpg"
+  },
+  "garments/old-money-top.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/c4/5d/5e/c45d5e7d48fa5011ec8c79081c883396.jpg"
+  },
+  "garments/old-money-bottom.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/9c/e1/78/9ce1787e52f4219b4256372a00a2559b.jpg"
+  },
+  "garments/old-money-shoes.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/9f/4c/c0/9f4cc0163a1da3a36a15f774363f0469.jpg"
+  },
+  "looks/goth.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/00/0f/8a/000f8aea111353f6711854ca7615fedf.jpg"
+  },
+  "garments/goth-top.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/97/35/c8/9735c885eaf5253263e4d98e9ffd93cd.jpg"
+  },
+  "garments/goth-bottom.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/ba/4d/02/ba4d02971cb31bd716b24579c9900840.jpg"
+  },
+  "garments/goth-shoes.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/dc/83/a5/dc83a552bfa3d55d60c158662bcf72bd.jpg"
+  },
+  "looks/y2k.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/08/f2/c4/08f2c48732531aa87b589a25c2fe514b.jpg"
+  },
+  "garments/y2k-top.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/83/e0/fb/83e0fb5daa448cbb7c877ab6d957eb4b.jpg"
+  },
+  "garments/y2k-bottom.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/af/49/76/af4976bcfc491686ef89b6ae3e77f8d6.jpg"
+  },
+  "garments/y2k-shoes.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/b9/06/e8/b906e8b451719b451479ce25776f4875.jpg"
+  },
+  "looks/techwear.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/09/b2/c5/09b2c50aefd3ca8f954f39b8de4f1ce3.jpg"
+  },
+  "garments/techwear-top.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/a9/83/cd/a983cd3bd406118dd7c6e360a7962488.jpg"
+  },
+  "garments/techwear-bottom.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/62/c6/b7/62c6b70ac589ffc139897d74be298150.jpg"
+  },
+  "garments/techwear-shoes.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/0f/6b/51/0f6b51586ff24a0a4765f342f4d8a5e2.jpg"
+  },
+  "looks/quiet-luxury.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/01/dc/ab/01dcab1acd42ba0be72384e7bfa76773.jpg"
+  },
+  "garments/quiet-luxury-top.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/d6/39/44/d639448487851d56d8785769ff72e377.jpg"
+  },
+  "garments/quiet-luxury-bottom.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/a2/5f/ec/a25fecbf776d60306a201292d9e7f85b.jpg"
+  },
+  "garments/quiet-luxury-shoes.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/ad/78/65/ad786597cfe7a67219aef739db99faca.jpg"
+  },
+  "looks/coquette.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/05/7b/ef/057befe9aa471d9f593325955566d520.jpg"
+  },
+  "garments/coquette-top.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/aa/eb/66/aaeb66cbddb214f6b798e0d100457a1b.jpg"
+  },
+  "garments/coquette-bottom.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/da/e5/1d/dae51df6f946303ebee4d0a86236ce6c.jpg"
+  },
+  "garments/coquette-shoes.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/75/99/65/7599653c7955cea84542613defb5807a.jpg"
+  },
+  "looks/grunge.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/17/91/fa/1791fad1681adae70bfe422f9a6fe2fe.jpg"
+  },
+  "garments/grunge-top.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/8d/c6/55/8dc655abdc9509b60a972160289a44c6.jpg"
+  },
+  "garments/grunge-bottom.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/f6/ba/14/f6ba142b5b28f45bf74bf7a0933debc8.jpg"
+  },
+  "garments/grunge-shoes.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/cd/0f/4d/cd0f4dab061cd5cdb609adb409265ffe.jpg"
+  },
+  "looks/minimalist.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/16/ba/99/16ba99f200fb9c09b82d22505acb2029.jpg"
+  },
+  "garments/minimalist-top.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/f3/12/7d/f3127de3a6fcb1befb600db819529c22.jpg"
+  },
+  "garments/minimalist-bottom.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/0e/13/a4/0e13a497adef3eeed8ec4a3e5e54e11e.jpg"
+  },
+  "garments/minimalist-shoes.jpg": {
+    "source": "Pinterest Shop the Look dataset (Kang et al., CVPR 2019)",
+    "page": "https://i.pinimg.com/736x/b1/ad/ae/b1adaeeab7975c7df23a4fa8dc6c6a31.jpg"
+  }
+}

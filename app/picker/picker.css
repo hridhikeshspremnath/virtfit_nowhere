@@ -1,0 +1,205 @@
+/* /picker: development tool for choosing real photos per style */
+.picker {
+  min-height: 100vh;
+  padding: 28px clamp(16px, 3vw, 40px) 60px;
+  background: var(--paper);
+}
+.picker > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.picker h1 {
+  font-family: var(--font-serif), serif;
+  font-weight: 400;
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+}
+.picker > header p {
+  max-width: 44rem;
+  margin-top: 6px;
+  color: var(--smoke);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+.picker > header .pill {
+  flex: none;
+  height: 40px;
+  padding: 0 18px;
+}
+.picker nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  margin: 20px -8px 16px;
+  padding: 10px 8px;
+  overflow-x: auto;
+  background: var(--paper);
+}
+.picker nav button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: 44px;
+  padding: 0 14px 0 6px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  background: var(--white);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.picker nav button[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--white);
+}
+.picker nav img,
+.picker nav i {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 20%;
+  background: var(--mist);
+  border: 1px dashed var(--ash);
+}
+.picker nav img {
+  border: 0;
+}
+.picker-error {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--white);
+  border: 1px solid var(--hair);
+}
+.picker-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px;
+  align-items: start;
+}
+.picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+.picker-grid > button {
+  aspect-ratio: 2 / 3;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--mist);
+  outline: 0 solid var(--ink);
+  transition: outline-width 120ms, transform var(--d-fast) var(--ease-out);
+}
+.picker-grid > button:hover {
+  transform: translateY(-2px);
+}
+.picker-grid > button.is-on {
+  outline-width: 3px;
+  outline-offset: 2px;
+}
+.picker img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.picker-pages {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 18px 0;
+  font-size: 0.875rem;
+  color: var(--smoke);
+}
+.picker .pill:not(.solid) {
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--hair);
+  background: var(--white);
+}
+.picker .pill:disabled {
+  opacity: 0.4;
+}
+.picker-side {
+  position: sticky;
+  top: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 22px;
+  background: var(--white);
+  border: 1px solid var(--hair);
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+}
+.picker-side h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.picker-side h2 em {
+  font-family: var(--font-serif), serif;
+  font-weight: 400;
+  color: var(--smoke);
+}
+.picker .hint {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--smoke);
+}
+.picker-scene {
+  height: 220px !important;
+  border-radius: 14px;
+  object-fit: contain !important;
+  background: var(--mist);
+}
+.picker-role > span {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-mono), monospace;
+  font-size: var(--t-micro);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+.picker-role > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.picker-role button {
+  width: 62px;
+  height: 62px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--hair);
+  background: var(--white);
+}
+.picker-role button[aria-pressed='true'] {
+  border: 2px solid var(--ink);
+}
+.picker-role img {
+  object-fit: contain;
+}
+.picker-save {
+  height: 44px;
+  justify-content: center;
+}
+@media (max-width: 820px) {
+  .picker-body {
+    grid-template-columns: 1fr;
+  }
+  .picker-side {
+    position: static;
+    max-height: none;
+    order: -1;
+  }
+}

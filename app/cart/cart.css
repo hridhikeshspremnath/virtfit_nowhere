@@ -1,0 +1,430 @@
+/* Cart: black stage, white receipt that prints out of a slot (design.md Part C + FD-3) */
+html:has(.cart) body {
+  background: var(--ink);
+}
+.cart {
+  min-height: 100svh;
+  padding: 84px 20px 80px;
+  background: var(--ink);
+  color: var(--white);
+  --paper-w: min(430px, 88vw);
+}
+.topbar.theme-dark {
+  background: linear-gradient(var(--ink) 55%, transparent);
+}
+
+.cart-head {
+  width: var(--paper-w);
+  margin: 0 auto 22px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.cart-head h1 {
+  font-family: var(--font-serif), serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(2.6rem, 6vw, 4rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--pink);
+}
+.cart-head .micro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 6px;
+  white-space: nowrap;
+}
+
+.led {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8a8a8a;
+}
+.led.printing {
+  background: var(--white);
+  animation: blink 0.5s steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+/* printer slot */
+.printer {
+  position: sticky;
+  top: 72px;
+  z-index: 5;
+  width: calc(var(--paper-w) * 1.16);
+  max-width: calc(100vw - 24px);
+  height: 34px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-radius: 14px;
+  background: linear-gradient(#ffffff, #e9e9e6);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 14px 30px rgba(0, 0, 0, 0.55);
+}
+.printer .slot {
+  flex: 1;
+  height: 5px;
+  margin-right: 14px;
+  border-radius: 3px;
+  background: #0a0a0a;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+.printer .led {
+  background: #8a8a8a;
+}
+.printer .led.printing {
+  background: var(--ink);
+}
+
+/* paper */
+.paper-window {
+  position: relative;
+  width: var(--paper-w);
+  margin: -17px auto 0;
+  padding-bottom: 14px;
+  overflow: hidden;
+  min-height: 120px;
+}
+.paper-window::before {
+  /* shadow under the slot lip, so the paper reads as coming from inside */
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 26px;
+  z-index: 2;
+  background: linear-gradient(rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+.paper {
+  --tooth: 10px;
+  position: relative;
+  padding: 44px 22px calc(var(--tooth) + 22px);
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  animation: feed var(--d-print) var(--ease-print) backwards;
+  /* zig-zag tear at the tail */
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / var(--tooth) 51% repeat-x,
+    linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth) * 0.5) no-repeat;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / var(--tooth) 51% repeat-x,
+    linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth) * 0.5) no-repeat;
+}
+@keyframes feed {
+  from {
+    transform: translateY(-100%);
+  }
+}
+/* perforation dots down both edges */
+.paper::before,
+.paper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: var(--tooth);
+  width: 3px;
+  background: radial-gradient(circle, var(--hair) 1.2px, transparent 1.6px) 0 0 / 3px 12px repeat-y;
+}
+.paper::before {
+  left: 6px;
+}
+.paper::after {
+  right: 6px;
+}
+.paper header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--t-micro);
+  color: var(--smoke);
+  text-align: center;
+}
+.paper-brand {
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 600;
+  font-size: 1.125rem;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.paper-brand sup {
+  font-size: 0.55em;
+}
+.pixel {
+  margin: 14px 0 6px;
+  font-family: var(--font-pixel), var(--font-mono), monospace;
+  font-size: clamp(2.4rem, 11vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+.paper-looks {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 10px;
+  margin: 10px 0 2px;
+}
+.paper-looks span {
+  display: block;
+  width: 54px;
+  height: 135px;
+}
+.paper-looks svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.rule {
+  margin: 10px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  line-height: 1;
+  height: 0.8em;
+}
+
+/* line items */
+.lines > li {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 260ms var(--ease-out), opacity 200ms;
+}
+.lines > li > .line {
+  min-height: 0;
+  overflow: hidden;
+}
+.lines > li.is-leaving {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.lines > li.is-new {
+  animation: line-print 420ms steps(4) backwards;
+}
+@keyframes line-print {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+}
+.line {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  gap: 12px;
+  align-items: start;
+}
+.line > * {
+  padding: 10px 0;
+}
+.lines > li + li .line {
+  border-top: 1px dashed var(--ash);
+}
+.paper .thumb,
+.complete .thumb {
+  display: block;
+  width: 52px;
+  height: 52px;
+  padding: 8px !important;
+  margin: 10px 0;
+  border-radius: 12px;
+  background: var(--mist);
+}
+.thumb svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.what {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.what small {
+  font-size: var(--t-micro);
+  color: var(--smoke);
+}
+.amount {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+.stepper button:not(.remove) {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px dashed var(--ink);
+  font-size: 13px;
+  line-height: 1;
+  transition: background var(--d-fast), color var(--d-fast);
+}
+.stepper button:not(.remove):hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--white);
+  border-style: solid;
+}
+.stepper button:disabled {
+  border-color: var(--ash);
+  color: var(--ash);
+  cursor: default;
+}
+.stepper output {
+  min-width: 22px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.stepper .remove {
+  margin-left: 8px;
+  padding: 6px 2px;
+  font-size: var(--t-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.stepper .remove:hover {
+  color: var(--ink);
+}
+
+.totals > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 2px 0;
+}
+.totals .total {
+  margin-top: 8px;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 1.75rem;
+  letter-spacing: -0.015em;
+}
+.totals .total dt {
+  font-weight: 300;
+}
+.totals .total dd {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  animation: pop var(--d-base) var(--ease-out);
+}
+.totals .total i {
+  font-style: normal;
+  color: var(--pink-ink);
+}
+.hand {
+  margin: 14px 0 2px;
+  font-family: var(--font-hand), cursive;
+  font-size: 1.25rem;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: center;
+  color: var(--smoke);
+  transform: rotate(-2deg);
+}
+.paper .bar-btn {
+  margin-top: 6px;
+}
+.paper-note {
+  margin-top: 10px;
+  text-align: center;
+  font-size: var(--t-micro);
+  color: var(--smoke);
+}
+.empty-line {
+  margin: 18px 0 14px;
+  text-align: center;
+}
+.paper-tags {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+  gap: 18px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--ash);
+}
+.paper-tags p {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--t-micro);
+  color: var(--smoke);
+}
+.paper-tags .barcode {
+  margin-top: 0;
+}
+.stars {
+  margin-top: 16px;
+  text-align: center;
+  font-size: var(--t-micro);
+  letter-spacing: 0.3em;
+}
+.thanks {
+  margin-top: 4px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* complete the look */
+.complete {
+  width: var(--paper-w);
+  margin: 34px auto 0;
+  animation: fade 600ms ease calc(var(--d-print) * 0.7) backwards;
+}
+.complete h2 {
+  font-weight: 400;
+  margin: 0 0 12px;
+}
+.complete ul {
+  display: grid;
+  gap: 8px;
+}
+.complete li {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 16px 8px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+}
+.complete .thumb {
+  margin: 0;
+  background: var(--white);
+}
+.complete strong {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+}
+.complete .chip {
+  height: 30px;
+  border-color: var(--white);
+  color: var(--white);
+}
+.complete .chip:hover {
+  background: var(--white);
+  color: var(--ink);
+}
