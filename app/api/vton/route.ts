@@ -18,11 +18,18 @@ const fail = (status: number, message: string) => NextResponse.json({ message },
 const fileData = (p: string) => ({ path: p, meta: { _type: 'gradio.FileData' } })
 
 async function upload(name: string, data: Buffer) {
-  const form = new FormData()
-  form.append('files', new Blob([new Uint8Array(data)], { type: 'image/jpeg' }), name)
-  const res = await fetch(`${BASE}/upload`, { method: 'POST', body: form })
-  if (!res.ok) throw new Error(`upload ${res.status}`)
-  return ((await res.json()) as string[])[0]
+  // the demo host sometimes refuses the first connection; one more try usually gets through
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const form = new FormData()
+      form.append('files', new Blob([new Uint8Array(data)], { type: 'image/jpeg' }), name)
+      const res = await fetch(`${BASE}/upload`, { method: 'POST', body: form, signal: AbortSignal.timeout(30_000) })
+      if (!res.ok) throw new Error(`upload ${res.status}`)
+      return ((await res.json()) as string[])[0]
+    } catch (e) {
+      if (attempt >= 2) throw e
+    }
+  }
 }
 
 export async function POST(req: Request) {
