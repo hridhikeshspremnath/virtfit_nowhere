@@ -6,7 +6,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { Body, Fit } from '@/lib/fit'
 import type { Outfit } from '@/lib/looks'
 
-export type Clip = 'idle' | 'walk' | 'turn' | 'arms'
+export type Clip = 'idle' | 'walk' | 'turn' | 'arms' | 'twist' | 'break'
 export type View = 'front' | 'side' | 'back'
 
 type Props = {
@@ -18,6 +18,8 @@ type Props = {
   /** bump `n` to animate the camera to a preset */
   view: { name: View; n: number }
   resetSignal: number
+  /** the shopper's face, drawn on the front of the head */
+  face?: HTMLCanvasElement | null
   onUnsupported: () => void
 }
 
@@ -62,7 +64,7 @@ function cut(profile: [number, number][], yMin: number): [number, number][] {
   return [[interp(profile, yMin), yMin], ...profile.filter(([, y]) => y > yMin + 0.015)]
 }
 
-function buildAvatar(body: Body, outfit: Outfit, fit: Fit, heatmap: boolean): Rig {
+function buildAvatar(body: Body, outfit: Outfit, fit: Fit, heatmap: boolean, face?: HTMLCanvasElement | null): Rig {
   const H = body.height / 100
   const s = H / 1.75
   const aH = halfWidth(body.hips)
@@ -94,6 +96,27 @@ function buildAvatar(body: Body, outfit: Outfit, fit: Fit, heatmap: boolean): Ri
   head.scale.set(0.078 * s, 0.112 * s, 0.092 * s)
   head.position.y = H - 0.112 * s
   chest.add(head)
+  if (face) {
+    // a cap of the head sphere carrying the photo; its edges fade into the skin colour
+    const tex = new THREE.CanvasTexture(face)
+    tex.colorSpace = THREE.SRGBColorSpace
+    const fade = document.createElement('canvas')
+    fade.width = fade.height = 128
+    const fx = fade.getContext('2d')!
+    const grad = fx.createRadialGradient(64, 64, 20, 64, 64, 62)
+    grad.addColorStop(0, '#fff')
+    grad.addColorStop(0.6, '#fff')
+    grad.addColorStop(1, '#000')
+    fx.fillStyle = grad
+    fx.fillRect(0, 0, 128, 128)
+    const patch = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 36, 28, Math.PI / 2 - 0.62, 1.24, Math.PI / 2 - 0.42, 1.2),
+      new THREE.MeshStandardMaterial({ map: tex, alphaMap: new THREE.CanvasTexture(fade), transparent: true, roughness: 0.65, depthWrite: false }),
+    )
+    patch.scale.copy(head.scale).multiplyScalar(1.012)
+    patch.position.copy(head.position)
+    chest.add(patch)
+  }
   const hair = new THREE.Mesh(
     new THREE.SphereGeometry(1, 40, 20, 0, Math.PI * 2, 0, Math.PI * 0.5),
     new THREE.MeshStandardMaterial({ color: outfit.hair, roughness: 0.9 }),
@@ -359,7 +382,7 @@ export default function FitStage(props: Props) {
         scene.remove(rig.root)
         disposeGroup(rig.root)
       }
-      rig = buildAvatar(p.body, p.outfit, p.fit, p.heatmap)
+      rig = buildAvatar(p.body, p.outfit, p.fit, p.heatmap, p.face)
       rig.root.rotation.y = rotY
       scene.add(rig.root)
       target.y = (p.body.height / 100) * 0.53
@@ -392,7 +415,7 @@ export default function FitStage(props: Props) {
     ro.observe(el)
     resize()
 
-    const pose = { armZ: 0.16, armX: 0, legX: 0, bob: 0 }
+    const pose = { armZ: 0.16, armX: 0, legX: 0, bob: 0, twist: 0 }
     const sph = new THREE.Spherical()
     const off = new THREE.Vector3()
     const clock = new THREE.Clock()
@@ -418,11 +441,19 @@ export default function FitStage(props: Props) {
         bob = Math.abs(Math.cos(t * 5.4)) * 0.012
       } else if (clip === 'arms') {
         armZ = 2.72
+      } else if (clip === 'break') {
+        // top-rock into a spin: low stance, legs scissoring, arms swinging wide
+        const ph = Math.sin(t * 9)
+        legX = ph * 1.1
+        armX = Math.cos(t * 9) * 1.2
+        armZ = 1.3
+        bob = -0.1 + Math.abs(ph) * 0.05
       }
       pose.armZ += (armZ - pose.armZ) * k
       pose.armX += (armX - pose.armX) * k
       pose.legX += (legX - pose.legX) * k
       pose.bob += (bob - pose.bob) * k
+      pose.twist += ((clip === 'twist' ? Math.sin(t * 2.2) * 0.55 : 0) - pose.twist) * k
 
       if (rig) {
         rig.armL.rotation.set(pose.armX, 0, pose.armZ)
@@ -430,10 +461,11 @@ export default function FitStage(props: Props) {
         rig.legL.rotation.x = pose.legX
         rig.legR.rotation.x = -pose.legX
         rig.root.position.y = pose.bob
+        rig.chest.rotation.y = pose.twist
         const breath = 1 + Math.sin(t * 1.7) * 0.004
         rig.chest.scale.set(breath, 1, breath)
-        if (clip === 'turn') {
-          rig.root.rotation.y += dt * 1.9
+        if (clip === 'turn' || clip === 'break') {
+          rig.root.rotation.y += dt * (clip === 'break' ? 6 : 1.9)
         } else {
           const rest = Math.round(rig.root.rotation.y / (Math.PI * 2)) * Math.PI * 2
           rig.root.rotation.y += (rest - rig.root.rotation.y) * k * 0.6
@@ -486,7 +518,7 @@ export default function FitStage(props: Props) {
   const { body, outfit, fit, heatmap } = props
   useEffect(() => {
     api.current?.rebuild()
-  }, [body.height, body.chest, body.waist, body.hips, outfit, fit.size, heatmap])
+  }, [body.height, body.chest, body.waist, body.hips, outfit, fit.size, heatmap, props.face])
 
   useEffect(() => {
     if (props.view.n > 0) api.current?.setView(props.view.name)

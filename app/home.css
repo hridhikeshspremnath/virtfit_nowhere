@@ -6,9 +6,8 @@
   position: absolute;
   z-index: 3;
   left: 3.2vw;
-  top: 92px;
-
-  max-width: 17rem;
+  bottom: 104px;
+  max-width: min(30rem, 44vw);
   pointer-events: none;
   transition: opacity 400ms ease;
   animation: fade 700ms ease 200ms backwards;
@@ -16,17 +15,26 @@
 .tagline h1 {
   font-family: var(--font-script), 'Snell Roundhand', cursive;
   font-weight: 400;
-  font-size: clamp(1.9rem, 2.7vw, 2.9rem);
-  line-height: 1.08;
+  font-size: clamp(2.6rem, min(5.6vw, 9vh), 5.8rem);
+  line-height: 1.12;
   letter-spacing: 0;
-  color: var(--pink);
+  rotate: -3deg;
+  transform-origin: 0 100%;
+  background: linear-gradient(100deg, var(--pink) 10%, #ff9ab8 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 6px 18px rgba(255, 90, 140, 0.28));
 }
 .tagline h1 s {
-  text-decoration-thickness: 1.5px;
-  text-decoration-color: rgba(10, 10, 10, 0.5);
+  text-decoration-thickness: 4px;
+  text-decoration-color: var(--ink);
+  text-decoration-skip-ink: none;
+  -webkit-text-fill-color: rgba(10, 10, 10, 0.4);
 }
 .tagline p {
-  margin-top: 10px;
+  display: none; /* the ring needs the room; the headline and button say it */
+  margin-top: 20px;
   font-size: 0.9375rem;
   line-height: 1.4;
   letter-spacing: -0.01em;
@@ -218,12 +226,14 @@
   .tagline {
     left: 0;
     right: 0;
-    top: 68px;
+    top: auto;
+    bottom: 100px;
     max-width: none;
     text-align: center;
   }
   .tagline h1 {
-    font-size: 1.75rem;
+    font-size: 2.6rem;
+    rotate: 0deg;
   }
   .tagline p {
     display: none;

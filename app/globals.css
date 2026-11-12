@@ -244,6 +244,16 @@ dd {
   font-size: 15px;
   letter-spacing: 0.16em;
   padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+}
+.wordmark .logo-mark {
+  transition: transform 500ms var(--ease-out);
+}
+.wordmark:hover .logo-mark {
+  transform: rotate(-14deg) scale(1.08);
 }
 .wordmark sup {
   font-size: 0.6em;
@@ -770,7 +780,72 @@ dd {
   position: fixed;
   inset: 0;
   z-index: 40;
+  overflow-y: auto;
+  background: var(--paper);
   --receipt-w: min(360px, 30vw);
+}
+.detail-top {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+}
+.more {
+  padding: 28px 5vw 8px;
+  border-top: 1px solid var(--hair);
+}
+.more h3 {
+  margin: 0 0 16px;
+  font-family: var(--font-serif), serif;
+  font-weight: 400;
+  font-size: 1.9rem;
+  letter-spacing: -0.02em;
+}
+.more h3 span {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  color: var(--smoke);
+  vertical-align: super;
+}
+.more-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 18px;
+  scroll-snap-type: x proximity;
+}
+.more-card {
+  flex: 0 0 168px;
+  scroll-snap-align: start;
+  display: grid;
+  gap: 6px;
+}
+.more-media {
+  display: grid;
+  place-items: center;
+  height: 210px;
+  border-radius: 14px;
+  background: rgba(10, 10, 10, 0.045);
+  overflow: hidden;
+  transition: transform var(--d-base) var(--ease-out);
+}
+.more-media:hover {
+  transform: translateY(-3px);
+}
+.more-media img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.more-name {
+  font-size: 0.8125rem;
+  letter-spacing: -0.01em;
+}
+.more-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
 }
 .detail-title {
   position: absolute;
@@ -1133,6 +1208,15 @@ dd {
   .receipt,
   .detail-hint {
     position: static;
+  }
+  .detail-top {
+    height: auto;
+    min-height: 0;
+    padding-bottom: 24px;
+  }
+  .more {
+    padding-left: 0;
+    padding-right: 0;
   }
   .detail-title {
     max-width: none;

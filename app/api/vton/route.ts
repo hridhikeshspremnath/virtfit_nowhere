@@ -7,12 +7,12 @@ export const runtime = 'nodejs'
 export const maxDuration = 300
 
 /**
- * Photo-real try-on through the public IDM-VTON demo on Hugging Face (free, anonymous, rate-limited).
+ * Photo-real try-on through the public Kolors Virtual Try-On demo on Hugging Face (free, anonymous, no GPU quota).
  * The shopper's photo and the garment picture are uploaded to that demo; it returns the dressed picture.
- * shortcut: a shared public demo with a small free quota and a research licence; move to a paid or
- * self-hosted model (TRYON_SPACE can point elsewhere) before real traffic or commercial use.
+ * shortcut: a shared public demo with no uptime promise and its own terms; move to a paid or self-hosted
+ * model (TRYON_SPACE can point elsewhere) before real traffic or commercial use.
  */
-const BASE = process.env.TRYON_SPACE || 'https://yisol-idm-vton.hf.space'
+const BASE = process.env.TRYON_SPACE || 'https://kwai-kolors-kolors-virtual-try-on.hf.space'
 
 const fail = (status: number, message: string) => NextResponse.json({ message }, { status })
 const fileData = (p: string) => ({ path: p, meta: { _type: 'gradio.FileData' } })
@@ -39,27 +39,30 @@ export async function POST(req: Request) {
     if (!file) return fail(404, 'That garment has no picture.')
     // cut-outs are transparent; the model wants the garment on plain white
     const garmentJpeg = await sharp(file).flatten({ background: '#ffffff' }).jpeg({ quality: 90 }).toBuffer()
-    const personJpeg = await sharp(Buffer.from(person.slice(person.indexOf(',') + 1), 'base64')).jpeg({ quality: 90 }).toBuffer()
+    // flatten first: a transparent photo would turn black in a JPEG
+    const personJpeg = await sharp(Buffer.from(person.slice(person.indexOf(',') + 1), 'base64')).flatten({ background: '#ffffff' }).jpeg({ quality: 90 }).toBuffer()
 
     const [p, g] = await Promise.all([upload('person.jpg', personJpeg), upload('garment.jpg', garmentJpeg)])
-    const start = await fetch(`${BASE}/call/tryon`, {
+    // the demo hides its try-on function (no api_name), so it is called by index (2) through the queue
+    const hash = Math.random().toString(36).slice(2, 12)
+    const start = await fetch(`${BASE}/queue/join`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      // person, garment, description, auto-mask, auto-crop, steps, seed
-      body: JSON.stringify({ data: [{ background: fileData(p), layers: [], composite: null }, fileData(g), String(body?.name || 'a garment').slice(0, 80), true, false, 30, 42] }),
+      // person, garment, seed, random seed
+      body: JSON.stringify({ data: [fileData(p), fileData(g), 0, true], fn_index: 2, session_hash: hash }),
     })
     if (!start.ok) throw new Error(`start ${start.status}`)
-    const { event_id } = (await start.json()) as { event_id: string }
 
-    // the answer arrives as a server-sent event stream ending in "complete" or "error"
-    const text = await (await fetch(`${BASE}/call/tryon/${event_id}`)).text()
-    const done = /event: complete\s+data: (.+)/.exec(text)
-    if (!done) {
-      const busy = /quota|queue|GPU/i.test(text)
-      return fail(busy ? 429 : 502, busy ? 'The free try-on service is busy or out of quota. Try again in a few minutes.' : 'The try-on service could not dress this photo.')
+    // progress arrives as server-sent events; the last one is "process_completed"
+    const text = await (await fetch(`${BASE}/queue/data?session_hash=${hash}`)).text()
+    const done = /data: (\{"msg":"process_completed".+)/.exec(text)
+    const out = done ? (JSON.parse(done[1]) as { success?: boolean; output?: { data?: ({ url?: string } | number | string)[] } }) : null
+    const first = out?.output?.data?.[0]
+    const url = typeof first === 'object' ? first?.url : undefined
+    if (!out?.success || !url) {
+      console.error('[vton] service said:', text.slice(-400))
+      return fail(429, 'The free try-on demo declined this one. It is shared and sometimes busy, or it could not find a full-length person in the photo. Try a clear front-facing full-body photo, or again later.')
     }
-    const url = (JSON.parse(done[1]) as { url?: string }[])[0]?.url
-    if (!url) return fail(502, 'The try-on service returned no picture.')
     return NextResponse.json({ url })
   } catch (e) {
     console.error('[vton]', e)

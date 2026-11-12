@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import Logo from './Logo'
 import { BRAND } from '@/lib/looks'
 import { summarize, useBag, useBagHydration } from '@/lib/store'
 
@@ -18,6 +19,7 @@ export default function TopBar({ left, dark }: { left?: ReactNode; dark?: boolea
     <header className={`topbar${dark ? ' theme-dark' : ''}`}>
       <div className="topbar-left">{left}</div>
       <Link href="/" className="wordmark" aria-label={`${BRAND} home`}>
+        <Logo />
         {BRAND}
         <sup>©</sup>
       </Link>

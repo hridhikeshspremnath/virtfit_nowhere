@@ -226,7 +226,7 @@ export default function Home() {
           focusItem={sel.item}
           closeSignal={closeSignal}
           returnRect={() => ring.current?.rectOf(sel.index) ?? null}
-          photo={assets.looks[LOOKS[sel.index].id]}
+          photo={results[LOOKS[sel.index].id] ?? assets.looks[LOOKS[sel.index].id]}
           garments={assets.garments}
           onClosed={() => setSel(null)}
         />

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Barcode from './Barcode'
 import Figure from './Figure'
-import { BRAND, SIZE_COUNT, TILL, WHOLE_FIT_DISCOUNT, money, pad2, sizeLabel, type Look } from '@/lib/looks'
+import { BRAND, PRODUCTS, SIZE_COUNT, TILL, WHOLE_FIT_DISCOUNT, money, pad2, sizeLabel, type Look, type Role } from '@/lib/looks'
 import { useBag } from '@/lib/store'
 
 const EASE_IO = 'cubic-bezier(.76,0,.24,1)'
@@ -28,6 +28,7 @@ type Props = {
 export default function LookDetail({ look, origin, focusItem, returnRect, onClosed, closeSignal, photo, garments = {}, spots }: Props) {
   const router = useRouter()
   const hero = useRef<HTMLDivElement>(null)
+  const sheet = useRef<HTMLElement>(null)
   const closeBtn = useRef<HTMLButtonElement>(null)
   const [active, setActive] = useState<number | null>(focusItem)
   const [sizeIdx, setSizeIdx] = useState(1)
@@ -65,6 +66,7 @@ export default function LookDetail({ look, origin, focusItem, returnRect, onClos
   const close = () => {
     if (closing) return
     setClosing(true)
+    sheet.current?.scrollTo(0, 0) // the fly-back animation expects the top of the page
     const back = returnRect()
     const anim = back ? flip(back, true) : null
     if (anim) anim.onfinish = onClosed
@@ -91,7 +93,8 @@ export default function LookDetail({ look, origin, focusItem, returnRect, onClos
   }
 
   return (
-    <section className={`detail${closing ? ' is-closing' : ''}`} role="dialog" aria-modal="true" aria-label={`${look.aesthetic} look: ${look.subtitle}`}>
+    <section ref={sheet} className={`detail${closing ? ' is-closing' : ''}`} role="dialog" aria-modal="true" aria-label={`${look.aesthetic} look: ${look.subtitle}`}>
+      <div className="detail-top">
       <div className="detail-title">
         <p className="micro">
           {look.aesthetic} · 3 pieces
@@ -134,7 +137,7 @@ export default function LookDetail({ look, origin, focusItem, returnRect, onClos
             )
           })}
         </div>
-        <p className="micro detail-hint">Tap a dot to shop this item</p>
+        <p className="micro detail-hint">Tap a dot to shop this item · scroll for more</p>
       </div>
 
       <button ref={closeBtn} type="button" className="circle-btn glass detail-close" onClick={close} aria-label="Close look">
@@ -226,6 +229,38 @@ export default function LookDetail({ look, origin, focusItem, returnRect, onClos
         <Barcode seed={look.id} height={34} />
         <p className="receipt-foot">Thanks for going nowhere.</p>
       </aside>
+      </div>
+
+      {(['top', 'bottom', 'shoes'] as Role[]).map((role) => {
+        // the other ring looks' pieces of this type come first, then the single pieces
+        const more = PRODUCTS.filter((p) => p.role === role && !look.items.some((i) => i.id === p.id))
+        return (
+          <section key={role} className="more" aria-label={`More ${role === 'top' ? 'tops' : role === 'bottom' ? 'bottoms' : 'shoes'}`}>
+            <h3>
+              More {role === 'top' ? 'tops' : role === 'bottom' ? 'bottoms' : 'shoes'} <span>{more.length}</span>
+            </h3>
+            <div className="more-row">
+              {more.map((p) => (
+                <article key={p.id} className="more-card">
+                  <Link href={`/product/${p.id}`} className="more-media" aria-label={p.name}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {p.image && <img src={p.image} alt="" loading="lazy" draggable={false} />}
+                  </Link>
+                  <Link href={`/product/${p.id}`} className="more-name">
+                    {p.name}
+                  </Link>
+                  <span className="more-price">
+                    {money(p.price)}
+                    <button type="button" className="chip" onClick={() => add(p.id, sizeLabel(p.role, sizeIdx))} aria-label={`Add ${p.name} to bag`}>
+                      Add
+                    </button>
+                  </span>
+                </article>
+              ))}
+            </div>
+          </section>
+        )
+      })}
     </section>
   )
 }

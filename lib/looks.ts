@@ -55,7 +55,7 @@ export type Look = {
   items: [Item, Item, Item]
 }
 
-export const BRAND = 'NOWHERE'
+export const BRAND = 'VIRTFIT NOWHERE'
 export const TILL = 'VOL. 01 · TILL 0034 · LISBON'
 export const WHOLE_FIT_DISCOUNT = 0.1
 
@@ -75,7 +75,7 @@ const seeds: Seed[] = [
     id: 'streetwear',
     aesthetic: 'Streetwear',
     subtitle: 'Dial-Up',
-    blurb: 'Boxy on top, loose below, clean underfoot.',
+    blurb: 'A boxy fleece, wide charcoal denim and tan boots.',
     outfit: {
       skin: '#C68E6A',
       hair: '#D9502E',
@@ -84,15 +84,15 @@ const seeds: Seed[] = [
       bottom: { kind: 'cargo', color: '#727A5B' },
       shoes: { kind: 'sneaker', color: '#F3F1EA', sole: '#D9D5CA' },
     },
-    top: ['Olive bomber jacket', 128],
-    bottom: ['Ripped boyfriend jeans', 112],
-    shoes: ['Strappy block heels', 135],
+    top: ['Brown zip fleece', 96],
+    bottom: ['Charcoal wide-leg jeans', 118],
+    shoes: ['Tan work boots', 160],
   },
   {
     id: 'old-money',
     aesthetic: 'Old Money',
     subtitle: 'Long Weekend',
-    blurb: 'Cable knit, a sharp pleat and a polished toe.',
+    blurb: 'Leather over cream pleats and a polished oxblood shoe.',
     outfit: {
       skin: '#E8C4A2',
       hair: '#6B4A2B',
@@ -101,15 +101,15 @@ const seeds: Seed[] = [
       bottom: { kind: 'trousers', color: '#27324A' },
       shoes: { kind: 'loafer', color: '#6B4226' },
     },
-    top: ['Double-breasted blazer', 164],
-    bottom: ['Pale straight jeans', 148],
-    shoes: ['Nude pointed pumps', 210],
+    top: ['Brown leather jacket', 240],
+    bottom: ['Cream wide-leg trousers', 110],
+    shoes: ['Oxblood leather shoes', 185],
   },
   {
     id: 'goth',
     aesthetic: 'Goth',
     subtitle: 'Midnight Shift',
-    blurb: 'One long line of black, lifted on a platform.',
+    blurb: 'Black leather, fishnet and a lifted combat boot.',
     outfit: {
       skin: '#F1DDD0',
       hair: '#141416',
@@ -118,15 +118,15 @@ const seeds: Seed[] = [
       bottom: { kind: 'wide', color: '#2A2A2F' },
       shoes: { kind: 'platform', color: '#101012', sole: '#2E2E33' },
     },
-    top: ['Leather biker jacket', 248],
-    bottom: ['Black ripped jeans', 118],
-    shoes: ['Suede ankle boots', 196],
+    top: ['Black leather jacket', 280],
+    bottom: ['Fishnet tights', 24],
+    shoes: ['Platform combat boots', 190],
   },
   {
     id: 'y2k',
     aesthetic: 'Y2K',
     subtitle: 'Dial Tone',
-    blurb: 'Shrunken tee, low denim, loud runners.',
+    blurb: 'A plaid overshirt over a crop, loose cargos, worn-in trainers.',
     outfit: {
       skin: '#B97A56',
       hair: '#2B1B14',
@@ -135,15 +135,15 @@ const seeds: Seed[] = [
       bottom: { kind: 'mini', color: '#6F8FBF' },
       shoes: { kind: 'sneaker', color: '#C9B8F0', sole: '#FFFFFF' },
     },
-    top: ['Off-shoulder crop top', 48],
-    bottom: ['Denim cut-offs', 72],
-    shoes: ['White chelsea boots', 142],
+    top: ['Plaid overshirt', 72],
+    bottom: ['Olive cargo pants', 88],
+    shoes: ['Grey canvas sneakers', 64],
   },
   {
     id: 'techwear',
     aesthetic: 'Techwear',
     subtitle: 'Dry Run',
-    blurb: 'Sealed seams and pockets for everything.',
+    blurb: 'Sculpted vest, strapped cargos and a heavy boot.',
     outfit: {
       skin: '#8D5B3F',
       hair: '#17171A',
@@ -152,15 +152,15 @@ const seeds: Seed[] = [
       bottom: { kind: 'cargo', color: '#444A51' },
       shoes: { kind: 'sneaker', color: '#C6E04A', sole: '#1B1B1D' },
     },
-    top: ['Utility parka', 226],
-    bottom: ['Black skinny jeans', 168],
-    shoes: ['White leather sneakers', 158],
+    top: ['Armoured crop vest', 130],
+    bottom: ['Black cargo pants', 104],
+    shoes: ['Black chunky boots', 170],
   },
   {
     id: 'quiet-luxury',
     aesthetic: 'Quiet Luxury',
     subtitle: 'Soft Launch',
-    blurb: 'No logos. Just weight, drape and a good shoulder.',
+    blurb: 'A soft henley, loose pinstripe and quiet trainers.',
     outfit: {
       skin: '#DDB08C',
       hair: '#B9905A',
@@ -169,15 +169,15 @@ const seeds: Seed[] = [
       bottom: { kind: 'wide', color: '#EDE7DB' },
       shoes: { kind: 'loafer', color: '#8B7765' },
     },
-    top: ['Breton stripe top', 285],
-    bottom: ['White cropped jeans', 230],
-    shoes: ['Horsebit loafers', 260],
+    top: ['Cream waffle henley', 84],
+    bottom: ['Pinstripe trousers', 112],
+    shoes: ['Grey suede trainers', 120],
   },
   {
     id: 'coquette',
     aesthetic: 'Coquette',
     subtitle: 'Sunday Letter',
-    blurb: 'Soft knit, a swing of pleats, a bar strap.',
+    blurb: 'Puff sleeves, a tiered skirt and ballet flats.',
     outfit: {
       skin: '#F0CDB4',
       hair: '#8A4B2A',
@@ -186,15 +186,15 @@ const seeds: Seed[] = [
       bottom: { kind: 'skirt', color: '#FBF4E6' },
       shoes: { kind: 'loafer', color: '#6E1F2B' },
     },
-    top: ['Oxford shirt', 96],
-    bottom: ['Pleated yellow skirt', 88],
-    shoes: ['Gold slingback heels', 124],
+    top: ['Puff-sleeve lace bodice', 78],
+    bottom: ['Tiered ruffle skirt', 96],
+    shoes: ['Blush ballet flats', 68],
   },
   {
     id: 'grunge',
     aesthetic: 'Grunge',
     subtitle: 'Feedback Loop',
-    blurb: 'Worn-in flannel, washed denim, heavy boots.',
+    blurb: 'Leather over a green hoodie and faded, ripped denim.',
     outfit: {
       skin: '#E3BC9C',
       hair: '#3A2A1E',
@@ -203,15 +203,15 @@ const seeds: Seed[] = [
       bottom: { kind: 'trousers', color: '#8FA3B8' },
       shoes: { kind: 'boot', color: '#17171A', sole: '#2C2C30' },
     },
-    top: ['Plaid flannel shirt', 92],
-    bottom: ['Ripped skinny jeans', 104],
-    shoes: ['Ankle-strap sandals', 176],
+    top: ['Black leather jacket', 260],
+    bottom: ['Faded distressed jeans', 98],
+    shoes: ['Black chunky trainers', 110],
   },
   {
     id: 'minimalist',
     aesthetic: 'Skater',
     subtitle: 'White Noise',
-    blurb: 'Cropped plaid, the widest jeans, low trainers.',
+    blurb: 'A plaid shirt, the widest jeans and low trainers.',
     outfit: {
       skin: '#A66E4C',
       hair: '#1C1512',
@@ -220,9 +220,9 @@ const seeds: Seed[] = [
       bottom: { kind: 'trousers', color: '#1C1C1E' },
       shoes: { kind: 'sneaker', color: '#FAFAF7', sole: '#E4E4E1' },
     },
-    top: ['White henley blouse', 58],
-    bottom: ['Indigo skinny jeans', 126],
-    shoes: ['Block-heel sandals', 148],
+    top: ['Pink plaid shirt', 58],
+    bottom: ['Black baggy jeans', 96],
+    shoes: ['Low black trainers', 90],
   },
 ]
 
