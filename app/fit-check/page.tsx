@@ -7,7 +7,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react'
 import type { Clip } from '@/components/FitStage'
 import { ProductImage } from '@/components/ProductCard'
 import TopBar, { ArrowLeft } from '@/components/TopBar'
-import { GarmentOverlay, ProfilePhoto } from '@/components/TryOn'
+import { ProfilePhoto } from '@/components/TryOn'
 import { PRODUCTS, SIZE_COUNT, findItem, findLook, money, sizeLabel, type Category, type Item, type Role } from '@/lib/looks'
 import { DEFAULT_BODY, SIZES, fitFor } from '@/lib/fit'
 import type { Outfit, TopKind } from '@/lib/looks'
@@ -234,11 +234,6 @@ function FittingRoom() {
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img className="person-photo" src={dressed ?? photo} alt={dressed ? `You wearing the ${top?.name}` : 'Your photo'} draggable={false} />
-              {pose.landmarks && !dressed && (
-                <span className="you-garment">
-                  {worn.top?.image && <GarmentOverlay src={worn.top.image} pose={pose.landmarks} />}
-                </span>
-              )}
               {busy && (
                 <span className="you-busy" role="status">
                   <i aria-hidden="true" />
@@ -247,7 +242,7 @@ function FittingRoom() {
               )}
               {top?.image && !dressed && !busy && (
                 <button type="button" className="pill solid person-real" onClick={makeReal}>
-                  Make it real ✦
+                  Try it on ✦
                 </button>
               )}
               {error && !busy && (
